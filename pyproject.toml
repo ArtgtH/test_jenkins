@@ -25,8 +25,15 @@ pythonpath = "src"
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "I"]
-ignore = []
+lint.select = [
+    "E",
+    "F",
+    "I",
+    "B",
+]
+lint.ignore = [
+    "B008",
+]
 exclude = [
     ".git",
     "__pycache__",
