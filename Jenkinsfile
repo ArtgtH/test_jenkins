@@ -56,7 +56,7 @@ pipeline {
         stage('Push to Nexus') {
             when {
                 allOf {
-                    expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+                    expression { currentBuild.result == 'SUCCESS' }
                     branch 'main'
                 }
             }
@@ -76,7 +76,11 @@ pipeline {
         }
 
         success {
-            echo 'I succeeded'
+            echo "Огонь по блядкому хутору"
+        }
+
+        failure {
+            echo "Баклажаны рвут резинку"
         }
     }
 }
