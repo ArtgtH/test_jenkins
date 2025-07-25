@@ -1,119 +1,62 @@
 pipeline {
     agent any
-
     environment {
         ALL_CREDS = "AAA"
     }
-
     triggers {
         cron('H */8 * * 1-5')
     }
-
-    parameters {
-        string(name: 'FIRST_NAME', defaultValue: 'Ivan',
-                description: 'This is your name')
-        string(name: 'LAST_NAME', defaultValue: 'Ivanov',
-                description: '')
-        text(name: 'MESSAGE', defaultValue: '',
-                description: 'Enter some information about the news')
-        booleanParam(name: 'DO_IT', defaultValue: true,
-                description: '.....')
-        choice(name: 'CHOICE', choices: ['one', '2', 'Three'],
-                description: 'Pick something')
-        password(name: 'PASSWORD', defaultValue: 'SECRET',
-                description: 'Enter a password')
-    }
-
     options {
-        buildDiscarder logRotator(daysToKeepStr: '3',
-                                  numToKeepStr: '3' )
+        buildDiscarder(logRotator(daysToKeepStr: '3', numToKeepStr: '3'))
         timeout(time: 20, unit: 'MINUTES')
     }
-
     stages {
         stage("Build") {
             steps {
-                echo "Баклажаны"
-                sh "echo 'Рвут'"
+                sh 'set +x && echo "Баклажаны Рвут"'
             }
         }
-
         stage("if") {
             steps {
                 sh '''
+                set +x
                 if [ 1 -eq 2 ]; then
                     echo "eq"
-                else if [ 1 -eq 3 ]; then
+                elif [ 1 -eq 3 ]; then
                     echo "eq 2"
                 else
                     echo "not eq"
                 fi
                 '''
-                echo "END IF"
             }
         }
-
         stage("for") {
             steps {
                 sh '''
+                set +x
                 for i in 1 2 3 4 5; do
-                    echo "значение ${i}"
+                    echo "значение $i"
                 done
                 '''
-                echo "END FOR"
             }
         }
-
         stage("checkout git") {
             steps {
-                git branch: 'main', url: 'https://github.com/elestopadov/jenkins-example-app.git'
-                sh "ls -la"
+                sh '''
+                set +x
+                git clone https://github.com/elestopadov/jenkins-example-app.git
+                ls -la
+                '''
             }
         }
-
         stage("envs") {
             environment {
                 SERVICE_CREDS = credentials('BBB')
             }
             steps {
-                echo "Echoed ${SERVICE_CREDS}"
-                sh "echo $ALL_CREDS"
+                sh 'set +x && echo $SERVICE_CREDS'
+                sh 'set +x && echo $ALL_CREDS'
             }
-        }
-
-        stage("params") {
-            steps {
-                echo "Hello ${params.FIRST_NAME}"
-                echo "Biography: ${params.LAST_NAME}"
-                echo "Toggle: ${params.DO_IT}"
-                echo "Choice: ${params.CHOICE}"
-                echo "Password: ${params.PASSWORD}"
-            }
-        }
-
-        stage("script") {
-            steps {
-                script {
-                    def servers = ["dev", "test"]
-                    if (servers[0].equals("dev")) {
-                        println "This is DEV"
-                    } else {
-                        println "It is not dev..."
-                    }
-                }
-            }
-        }
-
-    }
-    post {
-        always {
-            echo "always"
-        }
-        failure {
-            echo "failure"
-        }
-        success {
-            echo "success"
         }
     }
 }
