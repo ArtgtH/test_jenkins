@@ -19,7 +19,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'STARTED'
+                echo 'STARTED'
             }
         }
 
