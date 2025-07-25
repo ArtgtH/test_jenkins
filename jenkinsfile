@@ -40,15 +40,15 @@ pipeline {
                 '''
             }
         }
-        stage("checkout git") {
-            steps {
-                sh '''
-                set +x
-                git clone https://github.com/elestopadov/jenkins-example-app.git
-                ls -la
-                '''
-            }
-        }
+//         stage("checkout git") {
+//             steps {
+//                 sh '''
+//                 set +x
+//                 git clone https://github.com/elestopadov/jenkins-example-app.git
+//                 ls -la
+//                 '''
+//             }
+//         }
         stage("envs") {
             environment {
                 SERVICE_CREDS = credentials('BBB')
