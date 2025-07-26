@@ -19,6 +19,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                sh 'rm -rf .ruff_cache .pytest_cache __pycache__ || true'
+                sh 'find . -type d -exec chmod 777 {} \\;'
+                sh 'find . -type f -exec chmod 666 {} \\;'
                 echo 'STARTED'
             }
         }

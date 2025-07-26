@@ -16,7 +16,10 @@ RUN poetry install --only main --no-interaction --no-root
 
 FROM builder as tester
 
-COPY ./src ./tests ./
+RUN mkdir -p /app && chown -R 1000:1000 /app
+USER 1000
+
+COPY --chown=1000:1000 ./src ./tests ./
 
 
 FROM python:3.12-slim AS runtime
