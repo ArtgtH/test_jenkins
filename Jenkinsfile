@@ -35,7 +35,7 @@ pipeline {
         stage('Run Linter') {
             steps {
                 script {
-                    docker.image("test-${IMAGE_NAME}:${BUILD_TAG}").inside("--entrypoint=''") {
+                    docker.image("test-${IMAGE_NAME}:${BUILD_TAG}").inside("-w /app --user root") {
                         sh 'poetry run ruff check ./src'
                         sh 'poetry run ruff format ./src --check'
                     }
@@ -46,7 +46,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    docker.image("test-${IMAGE_NAME}:${BUILD_TAG}").inside("--entrypoint=''") {
+                    docker.image("test-${IMAGE_NAME}:${BUILD_TAG}").inside("-w /app --user root") {
                         sh 'poetry run pytest .'
                     }
                 }
