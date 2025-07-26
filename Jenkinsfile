@@ -60,6 +60,7 @@ pipeline {
             when {
                 allOf {
                     expression { currentBuild.result == 'SUCCESS' }
+                    branch 'origin/main'
                 }
             }
             steps {
