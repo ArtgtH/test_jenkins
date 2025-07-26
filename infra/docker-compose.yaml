@@ -1,0 +1,58 @@
+---
+services:
+  jenkins:
+    image: jenkins/jenkins:latest
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+    networks:
+      - ci-network
+
+  jenkins-agent:
+    build:
+      context: jenkins
+      args:
+        DOCKER_GID: ${HOST_DOCKER_GID:-984}
+    container_name: jenkins-agent
+    volumes:
+      - agent-data:/home/jenkins/agent
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      JENKINS_URL: "http://jenkins:8080"
+      JENKINS_AGENT_NAME: "docker-agent"
+      JENKINS_SECRET: "c91256422cbf28243579b5c875c5ffe45b36d008a289352c53041c99e425ca5d"
+      JENKINS_WEB_SOCKET: "true"
+      DOCKER_GID: ${HOST_DOCKER_GID:-984}
+    networks:
+      - ci-network
+    depends_on:
+      - jenkins
+
+
+  nexus:
+    image: sonatype/nexus3:latest
+    container_name: nexus
+    ports:
+      - "0.0.0.0:8081:8081"
+      - "0.0.0.0:8082:8082"
+    volumes:
+      - nexus-data:/nexus-data
+    networks:
+      - ci-network
+    environment:
+      INSTALL4J_ADD_VM_PARAMS: "-Xms1g -Xmx2g"
+
+networks:
+  ci-network:
+    driver: bridge
+
+volumes:
+  jenkins-data:
+  agent-data:
+  nexus-data:

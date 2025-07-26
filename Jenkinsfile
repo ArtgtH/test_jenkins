@@ -3,7 +3,7 @@ pipeline {
         label 'docker-agent'
     }
     environment {
-        REGISTRY = "nexus:8082"
+        REGISTRY = "localhost:8082"
         REPO_NAME = "python-app"
         IMAGE_NAME = "${REGISTRY}/${REPO_NAME}"
 		BUILD_TAG = "build-${BUILD_NUMBER}"
